@@ -1,4 +1,3 @@
-// -*- mode:objc; c-basic-offset:2; indent-tabs-mode:nil -*-
 /**
  * Copyright 2009 Jeff Verkoeyen
  *
@@ -37,9 +36,13 @@
 @property BOOL showLicense;
 @property BOOL oneDMode;
 @property BOOL isStatusBarHidden;
+@property (readonly) BOOL torchIsOn;
+
 
 - (void)initCapture;
 - (void)stopCapture;
+
+- (UIImage *)imageByRotatingImage:(UIImage *)initImage fromImageOrientation:(UIImageOrientation)orientation; //http://stackoverflow.com/a/7870597/381174
 
 @end
 
@@ -55,16 +58,16 @@
 @synthesize readers;
 
 
-- (id)initWithDelegate:(id<ZXingDelegate>)scanDelegate showCancel:(BOOL)shouldShowCancel OneDMode:(BOOL)shouldUseoOneDMode {
+- (id)initWithDelegate:(id<ZXingDelegate>)scanDelegate showCancel:(BOOL)shouldShowCancel oneDMode:(BOOL)shouldUseOneDMode {
   
-    return [self initWithDelegate:scanDelegate showCancel:shouldShowCancel OneDMode:shouldUseoOneDMode showLicense:YES];
+    return [self initWithDelegate:scanDelegate showCancel:shouldShowCancel oneDMode:shouldUseOneDMode showLicense:YES];
 }
 
-- (id)initWithDelegate:(id<ZXingDelegate>)scanDelegate showCancel:(BOOL)shouldShowCancel OneDMode:(BOOL)shouldUseoOneDMode showLicense:(BOOL)shouldShowLicense {
+- (id)initWithDelegate:(id<ZXingDelegate>)scanDelegate showCancel:(BOOL)shouldShowCancel oneDMode:(BOOL)shouldUseOneDMode showLicense:(BOOL)shouldShowLicense {
   self = [super init];
   if (self) {
     [self setDelegate:scanDelegate];
-    self.oneDMode = shouldUseoOneDMode;
+    self.oneDMode = shouldUseOneDMode;
     self.showCancel = shouldShowCancel;
     self.showLicense = shouldShowLicense;
     self.wantsFullScreenLayout = YES;
@@ -125,6 +128,11 @@
   return NO;
 }
 
+- (void)resumeScanning {
+    decoding = YES;
+}
+
+#pragma mark - View Lifecycle
 - (void)viewWillAppear:(BOOL)animated {
   [super viewWillAppear:animated];
   self.wantsFullScreenLayout = YES;
@@ -134,30 +142,154 @@
       NSLog(@"Problem loading nearSound.caf");
     }
   }
+    [self initCapture];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
   [super viewDidAppear:animated];
   self.isStatusBarHidden = [[UIApplication sharedApplication] isStatusBarHidden];
   if (!isStatusBarHidden)
-    [[UIApplication sharedApplication] setStatusBarHidden:YES];
+    //[[UIApplication sharedApplication] setStatusBarHidden:YES];
 
   decoding = YES;
-
-  [self initCapture];
-  [self.view addSubview:overlayView];
   
   [overlayView setPoints:nil];
   wasCancelled = NO;
+}
+
+- (void)viewWillDisappear:(BOOL)animated {    
+    [self stopCapture];
+    
+    [super viewWillDisappear:animated];
 }
 
 - (void)viewDidDisappear:(BOOL)animated {
   [super viewDidDisappear:animated];
   if (!isStatusBarHidden)
     [[UIApplication sharedApplication] setStatusBarHidden:NO];
-  [self.overlayView removeFromSuperview];
-  [self stopCapture];
+  
 }
+
+#pragma mark - Image Rotations
+// Alternate way to rotate image without the leaky CGImageRotated90 method.
+- (UIImage *)imageByRotatingImage:(UIImage *)initImage fromImageOrientation:(UIImageOrientation)orientation
+{
+    CGImageRef imgRef = initImage.CGImage;
+    
+    CGFloat width = CGImageGetWidth(imgRef);
+    CGFloat height = CGImageGetHeight(imgRef);
+    
+    CGAffineTransform transform = CGAffineTransformIdentity;
+    CGRect bounds = CGRectMake(0, 0, width, height);
+    CGSize imageSize = CGSizeMake(CGImageGetWidth(imgRef), CGImageGetHeight(imgRef));
+    CGFloat boundHeight;
+    UIImageOrientation orient = orientation;
+    switch(orient) {
+            
+        case UIImageOrientationUp: //EXIF = 1
+            return initImage;
+            break;
+            
+        case UIImageOrientationUpMirrored: //EXIF = 2
+            transform = CGAffineTransformMakeTranslation(imageSize.width, 0.0);
+            transform = CGAffineTransformScale(transform, -1.0, 1.0);
+            break;
+            
+        case UIImageOrientationDown: //EXIF = 3
+            transform = CGAffineTransformMakeTranslation(imageSize.width, imageSize.height);
+            transform = CGAffineTransformRotate(transform, M_PI);
+            break;
+            
+        case UIImageOrientationDownMirrored: //EXIF = 4
+            transform = CGAffineTransformMakeTranslation(0.0, imageSize.height);
+            transform = CGAffineTransformScale(transform, 1.0, -1.0);
+            break;
+            
+        case UIImageOrientationLeftMirrored: //EXIF = 5
+            boundHeight = bounds.size.height;
+            bounds.size.height = bounds.size.width;
+            bounds.size.width = boundHeight;
+            transform = CGAffineTransformMakeTranslation(imageSize.height, imageSize.width);
+            transform = CGAffineTransformScale(transform, -1.0, 1.0);
+            transform = CGAffineTransformRotate(transform, 3.0 * M_PI / 2.0);
+            break;
+            
+        case UIImageOrientationLeft: //EXIF = 6
+            boundHeight = bounds.size.height;
+            bounds.size.height = bounds.size.width;
+            bounds.size.width = boundHeight;
+            transform = CGAffineTransformMakeTranslation(0.0, imageSize.width);
+            transform = CGAffineTransformRotate(transform, 3.0 * M_PI / 2.0);
+            break;
+            
+        case UIImageOrientationRightMirrored: //EXIF = 7
+            boundHeight = bounds.size.height;
+            bounds.size.height = bounds.size.width;
+            bounds.size.width = boundHeight;
+            transform = CGAffineTransformMakeScale(-1.0, 1.0);
+            transform = CGAffineTransformRotate(transform, M_PI / 2.0);
+            break;
+            
+        case UIImageOrientationRight: //EXIF = 8
+            boundHeight = bounds.size.height;
+            bounds.size.height = bounds.size.width;
+            bounds.size.width = boundHeight;
+            transform = CGAffineTransformMakeTranslation(imageSize.height, 0.0);
+            transform = CGAffineTransformRotate(transform, M_PI / 2.0);
+            break;
+            
+        default:
+            [NSException raise:NSInternalInconsistencyException format:@"Invalid image orientation"];
+            
+    }
+    // Create the bitmap context
+    CGContextRef    context = NULL;
+    void *          bitmapData;
+    int             bitmapByteCount;
+    int             bitmapBytesPerRow;
+    
+    // Declare the number of bytes per row. Each pixel in the bitmap in this
+    // example is represented by 4 bytes; 8 bits each of red, green, blue, and
+    // alpha.
+    bitmapBytesPerRow   = (bounds.size.width * 4);
+    bitmapByteCount     = (bitmapBytesPerRow * bounds.size.height);
+    bitmapData = malloc( bitmapByteCount );
+    if (bitmapData == NULL)
+    {
+        return nil;
+    }
+    
+    // Create the bitmap context. We want pre-multiplied ARGB, 8-bits
+    // per component. Regardless of what the source image format is
+    // (CMYK, Grayscale, and so on) it will be converted over to the format
+    // specified here by CGBitmapContextCreate.
+    CGColorSpaceRef colorspace = CGImageGetColorSpace(imgRef);
+    context = CGBitmapContextCreate (bitmapData,bounds.size.width,bounds.size.height,8,bitmapBytesPerRow,
+                                     colorspace,kCGImageAlphaPremultipliedLast);
+    CGColorSpaceRelease(colorspace);
+    
+    if (context == NULL)
+        // error creating context
+        return nil;
+    
+    CGContextScaleCTM(context, -1.0, -1.0);
+    CGContextTranslateCTM(context, -height, -width);
+    
+    CGContextConcatCTM(context, transform);
+    
+    // Draw the image to the bitmap context. Once we draw, the memory
+    // allocated for the context for rendering will then contain the
+    // raw image data in the specified color space.
+    CGContextDrawImage(context, CGRectMake(0,0,width, height), imgRef);
+    
+    CGImageRef imgRef2 = CGBitmapContextCreateImage(context);
+    CGContextRelease(context);
+    free(bitmapData);
+    UIImage * image = [UIImage imageWithCGImage:imgRef2 scale:[UIScreen mainScreen].scale orientation:UIImageOrientationUp];
+    CGImageRelease(imgRef2);
+    return image;
+}
+
 
 - (CGImageRef)CGImageRotated90:(CGImageRef)imgRef
 {
@@ -234,8 +366,7 @@
   return rotatedImage;
 }
 
-// DecoderDelegate methods
-
+#pragma mark - DecoderDelegate methods
 - (void)decoder:(Decoder *)decoder willDecodeImage:(UIImage *)image usingSubset:(UIImage *)subset{
 #ifdef DEBUG
   NSLog(@"DecoderViewController MessageWhileDecodingWithDimensions: Decoding image (%.0fx%.0f) ...", image.size.width, image.size.height);
@@ -299,8 +430,7 @@
 }
 */
 
-#pragma mark - 
-#pragma mark AVFoundation
+#pragma mark - AVFoundation
 
 #include <sys/types.h>
 #include <sys/sysctl.h>
@@ -405,9 +535,11 @@ static bool isIPad() {
   [self.view.layer addSublayer: self.prevLayer];
 
   [self.captureSession startRunning];
+  [self.view addSubview:self.overlayView];
 #endif
 }
 
+#pragma mark - AVCaptureOutput Delegate
 #if HAS_AVFF
 - (void)captureOutput:(AVCaptureOutput *)captureOutput 
 didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer 
@@ -447,30 +579,7 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
   CGColorSpaceRelease(colorSpace);
 
   CGRect cropRect = [overlayView cropRect];
-  if (oneDMode) {
-    // let's just give the decoder a vertical band right above the red line
-    cropRect.origin.x = cropRect.origin.x + (cropRect.size.width / 2) - (ONE_D_BAND_HEIGHT + 1);
-    cropRect.size.width = ONE_D_BAND_HEIGHT;
-    // do a rotate
-    CGImageRef croppedImg = CGImageCreateWithImageInRect(capture, cropRect);
-    CGImageRelease(capture);
-    capture = [self CGImageRotated90:croppedImg];
-    capture = [self CGImageRotated180:capture];
-    //              UIImageWriteToSavedPhotosAlbum([UIImage imageWithCGImage:capture], nil, nil, nil);
-    CGImageRelease(croppedImg);
-    CGImageRetain(capture);
-    cropRect.origin.x = 0.0;
-    cropRect.origin.y = 0.0;
-    cropRect.size.width = CGImageGetWidth(capture);
-    cropRect.size.height = CGImageGetHeight(capture);
-  }
-
-  // N.B.
-  // - Won't work if the overlay becomes uncentered ...
-  // - iOS always takes videos in landscape
-  // - images are always 4x3; device is not
-  // - iOS uses virtual pixels for non-image stuff
-
+       
   {
     float height = CGImageGetHeight(capture);
     float width = CGImageGetWidth(capture);
@@ -483,10 +592,19 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
     cropRect.origin.x = (width-cropRect.size.width)/2;
     cropRect.origin.y = (height-cropRect.size.height)/2;
   }
-  CGImageRef newImage = CGImageCreateWithImageInRect(capture, cropRect);
-  CGImageRelease(capture);
-  UIImage *scrn = [[UIImage alloc] initWithCGImage:newImage];
-  CGImageRelease(newImage);
+    
+    CGImageRef newImage = CGImageCreateWithImageInRect(capture, cropRect);
+    CGImageRelease(capture);
+    UIImage *scrn = nil;    
+    //UIImageWriteToSavedPhotosAlbum(scrn, nil, nil, nil);    
+    if (oneDMode) {  
+        scrn = [[UIImage alloc] initWithCGImage:newImage scale:1.0 orientation:UIImageOrientationRight];
+    } else { 
+        scrn = [[UIImage alloc] initWithCGImage:newImage];
+    }    
+    CGImageRelease(newImage);
+    
+//UIImageWriteToSavedPhotosAlbum(scrn, nil, nil, nil);
   Decoder *d = [[Decoder alloc] init];
   d.readers = readers;
   d.delegate = self;
@@ -519,7 +637,7 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
     });
   }
 */
-
+  [self.overlayView removeFromSuperview];
   self.prevLayer = nil;
   self.captureSession = nil;
 #endif
@@ -527,7 +645,7 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
 
 #pragma mark - Torch
 
-- (void)setTorch:(BOOL)status {
+- (void)setTorch {
 #if HAS_AVFF
   Class captureDeviceClass = NSClassFromString(@"AVCaptureDevice");
   if (captureDeviceClass != nil) {
@@ -536,10 +654,10 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
     
     [device lockForConfiguration:nil];
     if ( [device hasTorch] ) {
-      if ( status ) {
-        [device setTorchMode:AVCaptureTorchModeOn];
-      } else {
+      if ( [self torchIsOn] ) {
         [device setTorchMode:AVCaptureTorchModeOff];
+      } else {
+        [device setTorchMode:AVCaptureTorchModeOn];
       }
     }
     [device unlockForConfiguration];

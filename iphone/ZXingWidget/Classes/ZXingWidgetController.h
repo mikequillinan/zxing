@@ -61,12 +61,12 @@
 @property (nonatomic, retain) ParsedResult *result;
 @property (nonatomic, retain) OverlayView *overlayView;
 
-- (id)initWithDelegate:(id<ZXingDelegate>)delegate showCancel:(BOOL)shouldShowCancel OneDMode:(BOOL)shouldUseoOneDMode;
-- (id)initWithDelegate:(id<ZXingDelegate>)scanDelegate showCancel:(BOOL)shouldShowCancel OneDMode:(BOOL)shouldUseoOneDMode showLicense:(BOOL)shouldShowLicense;
+- (id)initWithDelegate:(id<ZXingDelegate>)delegate showCancel:(BOOL)shouldShowCancel oneDMode:(BOOL)shouldUseOneDMode;
+- (id)initWithDelegate:(id<ZXingDelegate>)scanDelegate showCancel:(BOOL)shouldShowCancel oneDMode:(BOOL)shouldUseOneDMode showLicense:(BOOL)shouldShowLicense;
 
 - (BOOL)fixedFocus;
-- (void)setTorch:(BOOL)status;
-- (BOOL)torchIsOn;
+
+- (void)resumeScanning; // after a successful scan, scanning is stopped until you call this.
 
 @end
 
