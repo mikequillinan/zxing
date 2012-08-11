@@ -22,6 +22,7 @@
 	UIImageView *imageView;
 	NSMutableArray *_points;
 	UIButton *cancelButton;
+    UIButton *torchButton;
   UILabel *instructionsLabel;
 	id<CancelDelegate> delegate;
 	BOOL oneDMode;
@@ -44,4 +45,5 @@
 
 @protocol CancelDelegate
 - (void)cancelled;
+- (void)setTorch;
 @end
