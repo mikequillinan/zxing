@@ -152,6 +152,8 @@
 		3B81AACE120F08170022E5D4 /* HybridBinarizer.h in Headers */ = {isa = PBXBuildFile; fileRef = 3B81AACC120F08170022E5D4 /* HybridBinarizer.h */; };
 		3B81AAF8120F0A7E0022E5D4 /* GreyscaleRotatedLuminanceSource.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3B81AAF6120F0A7E0022E5D4 /* GreyscaleRotatedLuminanceSource.cpp */; };
 		3B81AAF9120F0A7E0022E5D4 /* GreyscaleRotatedLuminanceSource.h in Headers */ = {isa = PBXBuildFile; fileRef = 3B81AAF7120F0A7E0022E5D4 /* GreyscaleRotatedLuminanceSource.h */; };
+		58F4BED415F1471100372543 /* UIButton+Glossy.h in Headers */ = {isa = PBXBuildFile; fileRef = 58F4BED215F1471100372543 /* UIButton+Glossy.h */; };
+		58F4BED515F1471100372543 /* UIButton+Glossy.m in Sources */ = {isa = PBXBuildFile; fileRef = 58F4BED315F1471100372543 /* UIButton+Glossy.m */; };
 		AA747D9F0F9514B9006C5449 /* ZXingWidget_Prefix.pch in Headers */ = {isa = PBXBuildFile; fileRef = AA747D9E0F9514B9006C5449 /* ZXingWidget_Prefix.pch */; };
 		AACBBE4A0F95108600F1A2B1 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AACBBE490F95108600F1A2B1 /* Foundation.framework */; };
 		E534594311987396000CB77F /* BarcodeFormat.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E53458B511987396000CB77F /* BarcodeFormat.cpp */; };
@@ -442,6 +444,8 @@
 		3B81AACC120F08170022E5D4 /* HybridBinarizer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HybridBinarizer.h; sourceTree = "<group>"; };
 		3B81AAF6120F0A7E0022E5D4 /* GreyscaleRotatedLuminanceSource.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GreyscaleRotatedLuminanceSource.cpp; sourceTree = "<group>"; };
 		3B81AAF7120F0A7E0022E5D4 /* GreyscaleRotatedLuminanceSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GreyscaleRotatedLuminanceSource.h; sourceTree = "<group>"; };
+		58F4BED215F1471100372543 /* UIButton+Glossy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "UIButton+Glossy.h"; path = "Classes/UIButton+Glossy.h"; sourceTree = "<group>"; };
+		58F4BED315F1471100372543 /* UIButton+Glossy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "UIButton+Glossy.m"; path = "Classes/UIButton+Glossy.m"; sourceTree = "<group>"; };
 		AA747D9E0F9514B9006C5449 /* ZXingWidget_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZXingWidget_Prefix.pch; sourceTree = SOURCE_ROOT; };
 		AACBBE490F95108600F1A2B1 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		D2AAC07E0554694100DB518D /* libZXingWidget.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libZXingWidget.a; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -672,6 +676,7 @@
 				1F027FA611A7BEAF006B06DE /* MultiFormatReader.mm */,
 				1F027FA911A7BEAF006B06DE /* OverlayView.h */,
 				1F027FAA11A7BEAF006B06DE /* OverlayView.m */,
+				58F4BED615F1471600372543 /* Categories */,
 				E5345A00119876A5000CB77F /* Actions */,
 				E53459EF119876A5000CB77F /* ParsedResults */,
 				E53459D4119876A5000CB77F /* ResultParsers */,
@@ -732,6 +737,15 @@
 				3B248F8D14EF3A980065F0DA /* Detector.h */,
 			);
 			path = detector;
+			sourceTree = "<group>";
+		};
+		58F4BED615F1471600372543 /* Categories */ = {
+			isa = PBXGroup;
+			children = (
+				58F4BED215F1471100372543 /* UIButton+Glossy.h */,
+				58F4BED315F1471100372543 /* UIButton+Glossy.m */,
+			);
+			name = Categories;
 			sourceTree = "<group>";
 		};
 		E53458B311987396000CB77F /* CoreSrc */ = {
@@ -1211,6 +1225,7 @@
 				3B248F9314EF3A980065F0DA /* Decoder.h in Headers */,
 				3B248F9514EF3A980065F0DA /* Detector.h in Headers */,
 				3B248F9814EF3AF80065F0DA /* AztecReader.h in Headers */,
+				58F4BED415F1471100372543 /* UIButton+Glossy.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1458,6 +1473,7 @@
 				3B248F9214EF3A980065F0DA /* Decoder.cpp in Sources */,
 				3B248F9414EF3A980065F0DA /* Detector.cpp in Sources */,
 				3B248F9914EF3AF80065F0DA /* AztecReader.mm in Sources */,
+				58F4BED515F1471100372543 /* UIButton+Glossy.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

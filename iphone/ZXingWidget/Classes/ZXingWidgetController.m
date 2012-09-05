@@ -60,10 +60,10 @@
 
 - (id)initWithDelegate:(id<ZXingDelegate>)scanDelegate showCancel:(BOOL)shouldShowCancel oneDMode:(BOOL)shouldUseOneDMode {
   
-    return [self initWithDelegate:scanDelegate showCancel:shouldShowCancel oneDMode:shouldUseOneDMode showLicense:YES];
+    return [self initWithDelegate:scanDelegate showCancel:shouldShowCancel oneDMode:shouldUseOneDMode showLicense:YES torchButtonImage:nil];
 }
 
-- (id)initWithDelegate:(id<ZXingDelegate>)scanDelegate showCancel:(BOOL)shouldShowCancel oneDMode:(BOOL)shouldUseOneDMode showLicense:(BOOL)shouldShowLicense {
+- (id)initWithDelegate:(id<ZXingDelegate>)scanDelegate showCancel:(BOOL)shouldShowCancel oneDMode:(BOOL)shouldUseOneDMode showLicense:(BOOL)shouldShowLicense torchButtonImage:(UIImage *)torchButtonImage {
   self = [super init];
   if (self) {
     [self setDelegate:scanDelegate];
@@ -76,7 +76,8 @@
     OverlayView *theOverLayView = [[OverlayView alloc] initWithFrame:[UIScreen mainScreen].bounds 
                                                        cancelEnabled:showCancel 
                                                             oneDMode:oneDMode
-                                                         showLicense:shouldShowLicense];
+                                                         showLicense:shouldShowLicense
+                                                         torchButtonImage:torchButtonImage];
     [theOverLayView setDelegate:self];
     self.overlayView = theOverLayView;
     [theOverLayView release];
@@ -134,8 +135,9 @@
 
 #pragma mark - View Lifecycle
 - (void)viewWillAppear:(BOOL)animated {
-  [super viewWillAppear:animated];
-  self.wantsFullScreenLayout = YES;
+    [super viewWillAppear:animated];
+    self.wantsFullScreenLayout = YES;
+    
   if ([self soundToPlay] != nil) {
     OSStatus error = AudioServicesCreateSystemSoundID((CFURLRef)[self soundToPlay], &beepSound);
     if (error != kAudioServicesNoError) {

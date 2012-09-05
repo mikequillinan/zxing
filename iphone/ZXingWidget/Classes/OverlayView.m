@@ -16,11 +16,12 @@
 
 #import "OverlayView.h"
 
+#import "UIButton+Glossy.h"
+
 static const CGFloat kPadding = 10;
 
 @interface OverlayView()
 @property (nonatomic,assign) UIButton *cancelButton;
-@property (nonatomic,assign) UIButton *torchButton;
 @property (nonatomic,assign) UIButton *licenseButton;
 @property (nonatomic,retain) UILabel *instructionsLabel;
 @end
@@ -39,10 +40,10 @@ static const CGFloat kPadding = 10;
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 - (id)initWithFrame:(CGRect)theFrame cancelEnabled:(BOOL)isCancelEnabled oneDMode:(BOOL)isOneDModeEnabled {
-  return [self initWithFrame:theFrame cancelEnabled:isCancelEnabled oneDMode:isOneDModeEnabled showLicense:YES];
+  return [self initWithFrame:theFrame cancelEnabled:isCancelEnabled oneDMode:isOneDModeEnabled showLicense:YES torchButtonImage:nil];
 }
 
-- (id) initWithFrame:(CGRect)theFrame cancelEnabled:(BOOL)isCancelEnabled oneDMode:(BOOL)isOneDModeEnabled showLicense:(BOOL)showLicenseButton {
+- (id)initWithFrame:(CGRect)theFrame cancelEnabled:(BOOL)isCancelEnabled oneDMode:(BOOL)isOneDModeEnabled showLicense:(BOOL)showLicenseButton torchButtonImage:(UIImage *)torchButtonImage {
   self = [super initWithFrame:theFrame];
   if( self ) {
 
@@ -59,43 +60,44 @@ static const CGFloat kPadding = 10;
     if (isCancelEnabled) {
       UIButton *butt = [UIButton buttonWithType:UIButtonTypeRoundedRect]; 
       self.cancelButton = butt;
-      [cancelButton setTitle:@"Cancel" forState:UIControlStateNormal];
-      /*if (oneDMode) {
-        [cancelButton setTransform:CGAffineTransformMakeRotation(M_PI/2)];
-        
-        [cancelButton setFrame:CGRectMake(20, 175, 45, 130)];
-      }
-      else {*/
-        CGSize theSize = CGSizeMake(100, 50);
+      [self.cancelButton setTitle:@"Cancel" forState:UIControlStateNormal];
+        CGSize theSize = CGSizeMake(300, 44);
         CGRect theRect = CGRectMake((theFrame.size.width - theSize.width) / 2, cropRect.origin.y + cropRect.size.height + 20, theSize.width, theSize.height);
-        [cancelButton setFrame:theRect];
-        
-      //}
+        [self.cancelButton setFrame:theRect];
+        [self.cancelButton setBackgroundToGlossyRectOfColor:[UIColor colorWithRed:0.8 green:0.1 blue:0.1 alpha:1.0] withBorder:YES forState:UIControlStateNormal];
+        [self.cancelButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
       
-      [cancelButton addTarget:self action:@selector(cancel:) forControlEvents:UIControlEventTouchUpInside];
-      [self addSubview:cancelButton];
+      [self.cancelButton addTarget:self action:@selector(cancel:) forControlEvents:UIControlEventTouchUpInside];
+      [self addSubview:self.cancelButton];
         
       [self addSubview:imageView];
     }
+    
+      if (torchButtonImage) {
+          self.torchButton = [UIButton buttonWithType:UIButtonTypeCustom];
+          [self.torchButton setImage:torchButtonImage forState:UIControlStateNormal];
+      } else {
+          self.torchButton = [UIButton buttonWithType:UIButtonTypeContactAdd];
+      }
       
-    self.torchButton = [UIButton buttonWithType:UIButtonTypeContactAdd];
+    self.torchButton.frame = CGRectMake(0, 0, 20, 20);
     CGRect torchFrame = [self.torchButton frame];
     torchFrame.origin.x = self.frame.size.width - self.torchButton.frame.size.width - 15;
     torchFrame.origin.y = 10;
     [self.torchButton setFrame:torchFrame];
-    [torchButton addTarget:self action:@selector(torchPressed:) forControlEvents:UIControlEventTouchUpInside];
-    [self addSubview:torchButton];
+    [self.torchButton addTarget:self action:@selector(torchPressed:) forControlEvents:UIControlEventTouchUpInside];
+    [self addSubview:self.torchButton];
       
     if (showLicenseButton) {
         self.licenseButton = [UIButton buttonWithType:UIButtonTypeInfoLight];
         
-        CGRect lbFrame = [licenseButton frame];
-        lbFrame.origin.x = self.frame.size.width - licenseButton.frame.size.width - 20;
-        lbFrame.origin.y = self.frame.size.height - licenseButton.frame.size.height - 30;
-        [licenseButton setFrame:lbFrame];
-        [licenseButton addTarget:self action:@selector(showLicenseAlert:) forControlEvents:UIControlEventTouchUpInside];
+        CGRect lbFrame = [self.licenseButton frame];
+        lbFrame.origin.x = 15;
+        lbFrame.origin.y = 10;
+        [self.licenseButton setFrame:lbFrame];
+        [self.licenseButton addTarget:self action:@selector(showLicenseAlert:) forControlEvents:UIControlEventTouchUpInside];
         
-        [self addSubview:licenseButton];
+        [self addSubview:self.licenseButton];
     }
   }
   return self;

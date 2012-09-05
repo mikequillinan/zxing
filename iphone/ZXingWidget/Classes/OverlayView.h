@@ -23,20 +23,21 @@
 	NSMutableArray *_points;
 	UIButton *cancelButton;
     UIButton *torchButton;
-  UILabel *instructionsLabel;
+    UILabel *instructionsLabel;
 	id<CancelDelegate> delegate;
 	BOOL oneDMode;
-  CGRect cropRect;
-  NSString *displayedMessage;
+    CGRect cropRect;
+    NSString *displayedMessage;
 }
 
 @property (nonatomic, retain) NSMutableArray*  points;
 @property (nonatomic, assign) id<CancelDelegate> delegate;
 @property (nonatomic, assign) BOOL oneDMode;
 @property (nonatomic, assign) CGRect cropRect;
+@property (nonatomic, assign) UIButton *torchButton;
 @property (nonatomic, copy) NSString *displayedMessage;
 
-- (id)initWithFrame:(CGRect)theFrame cancelEnabled:(BOOL)isCancelEnabled oneDMode:(BOOL)isOneDModeEnabled showLicense:(BOOL)shouldShowLicense;
+- (id)initWithFrame:(CGRect)theFrame cancelEnabled:(BOOL)isCancelEnabled oneDMode:(BOOL)isOneDModeEnabled showLicense:(BOOL)shouldShowLicense torchButtonImage:(UIImage *)torchButtonImage;
 - (id)initWithFrame:(CGRect)theFrame cancelEnabled:(BOOL)isCancelEnabled oneDMode:(BOOL)isOneDModeEnabled;
 
 - (void)setPoint:(CGPoint)point;
