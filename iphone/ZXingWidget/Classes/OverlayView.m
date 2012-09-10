@@ -60,7 +60,7 @@ static const CGFloat kPadding = 10;
     if (isCancelEnabled) {
       UIButton *butt = [UIButton buttonWithType:UIButtonTypeRoundedRect]; 
       self.cancelButton = butt;
-      [self.cancelButton setTitle:@"Cancel" forState:UIControlStateNormal];
+      [self.cancelButton setTitle:NSLocalizedString(@"Cancel", nil) forState:UIControlStateNormal];
         CGSize theSize = CGSizeMake(300, 44);
         CGRect theRect = CGRectMake((theFrame.size.width - theSize.width) / 2, cropRect.origin.y + cropRect.size.height + 20, theSize.width, theSize.height);
         [self.cancelButton setFrame:theRect];
@@ -188,7 +188,7 @@ static const CGFloat kPadding = 10;
 - (void)drawRect:(CGRect)rect {
 	[super drawRect:rect];
   if (displayedMessage == nil) {
-    self.displayedMessage = @"Place a barcode inside the viewfinder rectangle to scan it.";
+    self.displayedMessage = NSLocalizedString(@"Place a barcode inside the viewfinder rectangle to scan it.", nil);
   }
 	CGContextRef c = UIGraphicsGetCurrentContext();
   
@@ -205,7 +205,7 @@ static const CGFloat kPadding = 10;
 	//	CGContextSetStrokeColor(c, white);
 	CGContextSaveGState(c);
 	if (oneDMode) {
-        self.displayedMessage = @"Place the red line over the bar code to be scanned.";
+        self.displayedMessage = NSLocalizedString(@"Place the red line over the bar code to be scanned.", nil);
 	} 
     UIFont *font = [UIFont systemFontOfSize:18];
     CGSize constraint = CGSizeMake(rect.size.width  - 2 * kTextMargin, cropRect.origin.y);
