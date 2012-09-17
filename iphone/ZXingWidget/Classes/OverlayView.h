@@ -14,6 +14,11 @@
  * limitations under the License.
  */
 
+//
+// Modified By: Michael Quillinan (https://github.com/mikequillinan on 9/5/2012
+//
+
+
 #import <UIKit/UIKit.h>
 
 @protocol CancelDelegate;

@@ -14,6 +14,11 @@
  * limitations under the License.
  */
 
+//
+// Modified By: Michael Quillinan (https://github.com/mikequillinan on 9/5/2012
+//
+
+
 #include <UIKit/UIKit.h>
 #include <AudioToolbox/AudioToolbox.h>
 #import <AVFoundation/AVFoundation.h>

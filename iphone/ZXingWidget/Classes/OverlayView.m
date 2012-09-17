@@ -14,6 +14,10 @@
  * limitations under the License.
  */
 
+//
+// Modified By: Michael Quillinan (https://github.com/mikequillinan on 9/5/2012
+//
+
 #import "OverlayView.h"
 
 #import "UIButton+Glossy.h"
