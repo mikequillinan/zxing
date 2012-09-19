@@ -47,6 +47,11 @@ static const CGFloat kPadding = 10;
   return [self initWithFrame:theFrame cancelEnabled:isCancelEnabled oneDMode:isOneDModeEnabled showLicense:YES torchButtonImage:nil];
 }
 
+- (id)initWithFrame:(CGRect)theFrame cancelEnabled:(BOOL)isCancelEnabled oneDMode:(BOOL)isOneDModeEnabled showLicense:(BOOL)shouldShowLicense {
+   return [self initWithFrame:theFrame cancelEnabled:isCancelEnabled oneDMode:isOneDModeEnabled showLicense:YES torchButtonImage:nil]; 
+}
+
+
 - (id)initWithFrame:(CGRect)theFrame cancelEnabled:(BOOL)isCancelEnabled oneDMode:(BOOL)isOneDModeEnabled showLicense:(BOOL)showLicenseButton torchButtonImage:(UIImage *)torchButtonImage {
   self = [super initWithFrame:theFrame];
   if( self ) {

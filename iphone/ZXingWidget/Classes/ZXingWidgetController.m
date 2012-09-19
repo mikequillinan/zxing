@@ -64,7 +64,10 @@
 
 
 - (id)initWithDelegate:(id<ZXingDelegate>)scanDelegate showCancel:(BOOL)shouldShowCancel oneDMode:(BOOL)shouldUseOneDMode {
-  
+    return [self initWithDelegate:scanDelegate showCancel:shouldShowCancel oneDMode:shouldUseOneDMode showLicense:YES torchButtonImage:nil];
+}
+
+- (id)initWithDelegate:(id<ZXingDelegate>)scanDelegate showCancel:(BOOL)shouldShowCancel oneDMode:(BOOL)shouldUseOneDMode showLicense:(BOOL)shouldShowLicense {
     return [self initWithDelegate:scanDelegate showCancel:shouldShowCancel oneDMode:shouldUseOneDMode showLicense:YES torchButtonImage:nil];
 }
 

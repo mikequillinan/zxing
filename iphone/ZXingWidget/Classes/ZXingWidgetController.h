@@ -67,6 +67,7 @@
 @property (nonatomic, retain) OverlayView *overlayView;
 
 - (id)initWithDelegate:(id<ZXingDelegate>)delegate showCancel:(BOOL)shouldShowCancel oneDMode:(BOOL)shouldUseOneDMode;
+- (id)initWithDelegate:(id<ZXingDelegate>)scanDelegate showCancel:(BOOL)shouldShowCancel oneDMode:(BOOL)shouldUseOneDMode showLicense:(BOOL)shouldShowLicense;
 - (id)initWithDelegate:(id<ZXingDelegate>)scanDelegate showCancel:(BOOL)shouldShowCancel oneDMode:(BOOL)shouldUseOneDMode showLicense:(BOOL)showLicenseButton torchButtonImage:(UIImage *)torchButtonImage;
 
 - (BOOL)fixedFocus;
